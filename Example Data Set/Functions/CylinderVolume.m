@@ -8,10 +8,10 @@ function [V] = CylinderVolume(Ca,Cyl)
 %   Cyl.CompressionRatio    : Compession Ratio
 %   Cyl.TDCangle            : Angle associated with the Top Dead Center
 %----------------------------------------------------------------------
-fprintf('WARNING------------------------------------------------------------------\n');
-fprintf(' Modify this function to yours. Now it is just a sinusoidal expression\n');
-fprintf(' This function is %s\n',mfilename('fullpath'));
-fprintf('END OF WARNING ----------------------------------------------------------\n');
+%fprintf('WARNING------------------------------------------------------------------\n');
+%fprintf(' Modify this function to yours. Now it is just a sinusoidal expression\n');
+%fprintf(' This function is %s\n',mfilename('fullpath'));
+%fprintf('END OF WARNING ----------------------------------------------------------\n');
 B   = Cyl.Bore;
 S   = Cyl.Stroke;
 cr  = Cyl.CompressionRatio;
@@ -21,7 +21,9 @@ l   = Cyl.ConRod;
 CAl     = Ca-Cyl.TDCangle;
 Vd      = pi*(B/2)^2*S;
 Vc      = Vd/(cr-1);
-V       = Vc + Vd*(sind(CAl+90)+1)/2; % 'sind' is the sine function taking arguments in degrees instead of radians
+R = l/r;
+%V       = Vc + Vd*(sind(CAl+90)+1)/2; % 'sind' is the sine function taking arguments in degrees instead of radians
+V = Vc + (Vd/2) * (1 + R - cosd(CAl) - sqrt(R^2 - sind(CAl).^2));
 
 
 
