@@ -70,8 +70,26 @@ Ca = reshape(dataIn(:,1), NptsPerCycle, Ncycles);          % [deg], one column p
 p  = reshape(dataIn(:,2), NptsPerCycle, Ncycles) * bara;   % [Pa],  one column per cycle
 CaVec = Ca(:,1);                                           % same crank-angle grid for every cycle
 
-%% Pre-processing
-% these will be included in future SSAs, which includes noise filtering and pegging
+%% pressure pre-processing
+
+%pegging
+p_intake = 1.0 * bara;
+    
+%% taking average of pressures at CA -180
+[~, idx_BDC] = min(abs(CaVec - (-180))); % array of indexes for intake BDC
+
+p_mean_BDC = mean(p(idx_BDC, :)); % average raw pressure across all CA -180
+
+offset = p_intake - p_mean_BDC; % calculate offset
+
+p_pegged = p + offset; % apply offset to pressure values
+
+%filtering
+polyOrder = 2;
+frameLen = 15;
+p_clean = sgolayfilt(p_pegged, polyOrder, frameLen, [], 1); % apply savitzky golay noise filter
+
+p = p_clean;
 
 %% Cylinder volume (slider-crank)
 % Uses cylinder_volume.m wrote by Rivan in the last SSA.
